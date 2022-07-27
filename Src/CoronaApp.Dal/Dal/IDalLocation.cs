@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CoronaApp.Services;
+namespace CoronaApp.Dal;
 
-public interface ILocationRespository
+public interface IDalLocation
 {
     Task Delete(Location l);
     Task<List<Location>> Get();
@@ -13,4 +13,7 @@ public interface ILocationRespository
     Task Post(Location location);
     Task<List<Location>> GetByDate(LocationSearch ls);
     Task<List<Location>> GetByAge(LocationSearch ls);
+
+
+
 }

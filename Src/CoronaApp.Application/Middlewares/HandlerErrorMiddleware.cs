@@ -1,14 +1,15 @@
-﻿using CoronaApp.Api.Logging;
+﻿
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
-namespace CoronaApp.Api.Middlewares
-{
+namespace CoronaApp.Api.Middlewares;
+
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class HandlerErrorMiddleware
     {
@@ -27,13 +28,15 @@ namespace CoronaApp.Api.Middlewares
                 await _next(httpContext);
                 if (httpContext.Response.StatusCode > 400 && httpContext.Response.StatusCode < 500)
                 {
-                    throw new Exception("Not Found the page rong url"+httpContext.Request.Body.Position);
-                }
+                    throw new Exception("Not Found the page rong url" + httpContext.Request.Body.Position);
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
             }
             catch (Exception ex)
             {
                 _ilogger.Log(LogLevel.Information, ex.Message);
-            }
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        }
         }
     }
 
@@ -45,4 +48,5 @@ namespace CoronaApp.Api.Middlewares
             return builder.UseMiddleware<HandlerErrorMiddleware>();
         }
     }
-}
+
+

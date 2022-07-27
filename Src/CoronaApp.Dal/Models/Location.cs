@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CoronaApp.Dal.Models
 {
@@ -16,8 +17,9 @@ namespace CoronaApp.Dal.Models
         [MaxLength(9)]
         public string PatientId { get; set; }
         [ForeignKey("PatientId")]
+        [JsonIgnore]
         public virtual Patient Patient { get; set; }
 
-
+  
     }
 }
