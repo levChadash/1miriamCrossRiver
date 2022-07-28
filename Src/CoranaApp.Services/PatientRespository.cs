@@ -14,12 +14,12 @@ public class PatientRespository : IPatientRespository
     {
         this.dal = dal;
     }
-    public async Task<List<Patient>> Get()
+    public async Task<List<Patient>> GetAllPatients()
     {
-        return await dal.Get();
+        return await dal.GetAllPatients();
     }
-    public async Task Post(Patient patient)
+    public async Task<string> AddPatient(Patient patient)
     {
-        await dal.Post(patient);
+         return await dal.AddPatient(patient);
     }
 }

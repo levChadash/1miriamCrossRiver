@@ -24,56 +24,65 @@ public class UserController : ControllerBase
         this.userResposetory = userResposetory;
     }
     // GET: api/<LoginController>
-    [HttpGet("/name")]
+    
     [Authorize]
-    public string GetNameByToken()
+    [HttpGet("name")]
+    public  async Task<ActionResult<string>> GetNameByToken()
     {
-        var userName = User.Claims.FirstOrDefault(
-                  x => x.Type.ToString().Equals("Name", StringComparison.InvariantCultureIgnoreCase));
-        
-      if(userName != null)
+
+        var result=await userResposetory.GetNameByToken(User);
+
+        if (result == null)
         {
-            return userName.ToString();
+            return StatusCode(404, "not found");
         }
-        return null;
-        
-
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result.ToString());
     }
 
-    // GET api/<LoginController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
+
+   
+
+    [HttpPost("login")]
+    public async Task<ActionResult<string>> LogIn([FromBody] User user)
     {
-        return "value";
+        if (user == null)
+        {
+            throw new ArgumentNullException("no details for user");
+        }
+        var result = await userResposetory.LogIn(user);
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
     }
 
-    // POST api/<LoginController>
-    [HttpPost("/signUp")]
-    public async Task<string> signUp([FromBody] User user)
+    // Post: User
+    [HttpPost("signUp")]
+    public async Task<ActionResult<string>> SignUp([FromBody] User user)
     {
-        
-        return await userResposetory.Post(user);
-    }
-
-    [HttpPost("login/")]
-    public async Task<IActionResult> PostLogin([FromBody] User user)
-    {
-        string token = await userResposetory.PostLogIn(user);
-        if (token == null)
-            return NotFound();
-        return Ok(token);
-    }
-
-    // PUT api/<LoginController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
-    // DELETE api/<LoginController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
+        if (user == null)
+        {
+            throw new ArgumentNullException("no user details");
+        }
+        var result = await userResposetory.SignUp(user);
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
     }
 }
 

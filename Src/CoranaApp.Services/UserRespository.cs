@@ -1,6 +1,7 @@
 ﻿using CoronaApp.Dal;
 using CoronaApp.Dal.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -32,7 +33,8 @@ public class UserRespository : IUserRespository
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("Name", user.UserName.ToString()),
-                        new Claim("id", user.Id.ToString())
+                        new Claim("id", user.Id.ToString()),
+                        new Claim("Role","user"),
                     };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -47,32 +49,45 @@ public class UserRespository : IUserRespository
         return new JwtSecurityTokenHandler().WriteToken(token);
 
     }
-    public async Task<string> PostLogIn(User user)
+
+    public async Task<string> LogIn(User user)
     {
-        User userFound = await dal.PostLogIn(user);
-        if (userFound == null)
+        User userFound = await dal.LogIn(user);
+        if (userFound != null)
+        {
+            return await CreatToken(userFound);
+        }
+        else
+        {
             return null;
-        return await CreatToken(userFound);
+        }
     }
-    public async Task<User> CheckUser(User user)
+
+    public async Task<string> SignUp(User user)
     {
-        User userFound = await this.dal.PostLogIn(user);
-            if(userFound == null)
-                 return null;
-            return userFound;
+        if (await dal.LogIn(user) == null)
+        {
+            await dal.SignUp(user);
+
+            return await LogIn(user);
+        }
+        else
+        {
+            return await LogIn(user);
+        }
 
     }
-     public async Task<string> Post(User user)
+   public async Task<string> GetNameByToken(ClaimsPrincipal user)
     {
-        if(CheckUser(user)==null)
-        await this.dal.AddUser(user);
-        return await PostLogIn(user);
+        var userName= user.Claims.FirstOrDefault(x => x.Type.ToString().Equals("Name", StringComparison.InvariantCultureIgnoreCase));
+        if (userName != null)
+        {
+            return userName.ToString();
+        }
+        else
+        {
+            return null;
+        }
     }
-   /* public string getUserName(PEHeaders headers)
-    {
-
-
-        return headers;
-    }*/
 }
 

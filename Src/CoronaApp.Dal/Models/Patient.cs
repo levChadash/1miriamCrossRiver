@@ -6,9 +6,11 @@ namespace CoronaApp.Dal.Models
     {
         [Key]
         [Required]
-        [MaxLength(9)]
+     
+        [StringLength(9)]
         public string Id { get; set; }
         public string Name { get; set; }
+        [Range(0, 120)]
         public int Age { get; set; }
     }
 }

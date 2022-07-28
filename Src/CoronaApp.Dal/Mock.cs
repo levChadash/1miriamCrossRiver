@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CoronaApp.Dal;
 
- public class Mock : IDalLocation
+public class Mock : IDalLocation
 {
-    
+
     Patient p1 = new Patient() { Id = "324103357", Name = "Miriam", Age = 9 };
     Patient p2 = new Patient() { Id = "324864800", Name = "Leah", Age = 9 };
     Patient p3 = new Patient() { Id = "212825376", Name = "Shani", Age = 9 };
@@ -41,7 +41,7 @@ namespace CoronaApp.Dal;
         throw new NotImplementedException();
     }
 
-    public async  Task<List<Location>> Get()
+    public async Task<List<Location>> GetLocations()
     {
         return lc;
     }
@@ -59,14 +59,29 @@ namespace CoronaApp.Dal;
     public Task<List<Location>> GetByDate(LocationSearch ls)
     {
         throw new NotImplementedException();
+
     }
+    public Task<List<Location>> GetByStartDate(LocationSearch ls)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<List<Location>> GetByEndDate(LocationSearch ls)
+    {
+        throw new NotImplementedException();
+    }
+
 
     public Task<List<Location>> GetById(string id)
     {
         throw new NotImplementedException();
     }
 
-    public Task Post(Location location)
+    public Task<int> AddLocation(Location location)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteLocation(Location l)
     {
         throw new NotImplementedException();
     }

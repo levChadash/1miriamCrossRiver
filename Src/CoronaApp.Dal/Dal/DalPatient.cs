@@ -15,22 +15,30 @@ namespace CoronaApp.Dal;
             _context = context;
         }
 
-        public async Task<List<Patient>> Get()
+        public async Task<List<Patient>> GetAllPatients()
         {
             List<Patient> lp = await _context.Patients.ToListAsync();
             if (lp == null)
                 return null;
             else
-            { //return lp
-                throw new NotImplementedException();
+            {
+            return lp;
             }
 
         }
 
-        public async Task Post(Patient patient)
+        public async Task<string> AddPatient(Patient patient)
+        {
+        try
         {
             await _context.Patients.AddAsync(patient);
             await _context.SaveChangesAsync();
+            return patient.Id;
+        }
+        catch {
+            throw new Exception("didnt add patient");
+        }
+
         }
     }
 

@@ -6,6 +6,6 @@ namespace CoronaApp.Services;
 
 public interface IPatientRespository
 {
-    Task<List<Patient>> Get();
-    Task Post(Patient patient);
+    Task<List<Patient>> GetAllPatients();
+    Task<string> AddPatient(Patient patient);
 }

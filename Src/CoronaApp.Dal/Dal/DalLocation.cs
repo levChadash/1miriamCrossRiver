@@ -17,15 +17,19 @@ public class DalLocation : IDalLocation
     {
         _context = context;
     }
+    
 
-
-    public async Task<List<Location>> Get()
+    public async Task<List<Location>> GetLocations()
     {
-        
-        List<Location>  listLocations=await _context.Locations.ToListAsync();
-        if (listLocations.Count == 0)
-            return null;
-        return listLocations;
+        using (var _CoronaAppContext = new CoronaAppContext())
+        {
+            List<Location> listLocations = await _CoronaAppContext.Locations.ToListAsync();
+            if (listLocations.Count == 0)
+                return null;
+            return listLocations;
+        }
+
+       
 
     }
 
@@ -48,7 +52,24 @@ public class DalLocation : IDalLocation
     public async Task<List<Location>> GetByDate(LocationSearch ls)
     {
         List<Location> lc = await _context.Locations.Where(c => c.StartDate >= ls.StartDate).
-            Where(c=>c.EndDate<=ls.EndDate)
+            Where(c => c.EndDate <= ls.EndDate)
+            .ToListAsync();
+        if (lc.Count == 0)
+            return null;
+        return lc;
+    }
+    public async Task<List<Location>> GetByStartDate(LocationSearch ls)
+    {
+        List<Location> lc = await _context.Locations.Where(c => c.StartDate >= ls.StartDate)
+            .ToListAsync();
+        if (lc.Count == 0)
+            return null;
+        return lc;
+    }
+    public async Task<List<Location>> GetByEndDate(LocationSearch ls)
+    {
+        List<Location> lc = await _context.Locations.
+            Where(c => c.EndDate <= ls.EndDate)
             .ToListAsync();
         if (lc.Count == 0)
             return null;
@@ -56,36 +77,38 @@ public class DalLocation : IDalLocation
     }
     public async Task<List<Location>> GetByAge(LocationSearch ls)
     {
-        List<Location> lc = await _context.Locations.Where(c=>c.Patient.Age==ls.Age)
+        List<Location> lc = await _context.Locations.Where(c => c.Patient.Age == ls.Age)
             .ToListAsync();
-         if (lc.Count == 0)
+        if (lc.Count == 0)
             return null;
         return lc;
     }
-    
-    public  async Task Post(Location location)
+
+    public async Task<int> AddLocation(Location location)
     {
         try
         {
             await _context.Locations.AddAsync(location);
             await _context.SaveChangesAsync();
+
+            return location.LocaionId;
         }
-        catch(Exception ex)
+        catch 
         {
-            throw new Exception("faild saving"+ex.Message);
+            throw new Exception("faild saving location");
         }
     }
 
-    public async Task Delete(Location l)
+    public async Task DeleteLocation(Location l)
     {
         try
         {
             _context.Locations.Remove(l);
             await _context.SaveChangesAsync();
         }
-        catch(Exception e)
+        catch 
         {
-            throw new Exception(e.ToString());
+            throw new Exception("didnt mange to delete location");
         }
     }
 

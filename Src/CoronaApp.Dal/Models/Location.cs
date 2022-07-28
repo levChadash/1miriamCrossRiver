@@ -10,11 +10,13 @@ namespace CoronaApp.Dal.Models
         [Key]
        
         public int LocaionId { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
         public string City { get; set; }
         public string Address { get; set; }
-        [MaxLength(9)]
+        [StringLength(9)]
         public string PatientId { get; set; }
         [ForeignKey("PatientId")]
         [JsonIgnore]

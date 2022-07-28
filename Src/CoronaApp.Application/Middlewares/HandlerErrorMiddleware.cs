@@ -10,43 +10,62 @@ using System.Threading.Tasks;
 
 namespace CoronaApp.Api.Middlewares;
 
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
-    public class HandlerErrorMiddleware
+// You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+public class HandlerErrorMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ILogger<HandlerErrorMiddleware> _ilogger;
+    public HandlerErrorMiddleware(RequestDelegate next, ILogger<HandlerErrorMiddleware> ilogger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<HandlerErrorMiddleware> _ilogger;
-        public HandlerErrorMiddleware(RequestDelegate next, ILogger<HandlerErrorMiddleware> ilogger)
-        {
-            _ilogger = ilogger;
-            _next = next;
-        }
+        _ilogger = ilogger;
+        _next = next;
+    }
 
-        public async Task Invoke(HttpContext httpContext)
+    public async Task Invoke(HttpContext httpContext)
+    {
+        try
         {
-            try
+            await _next(httpContext);
+            if (httpContext.Response.StatusCode > 400 && httpContext.Response.StatusCode < 500)
             {
-                await _next(httpContext);
-                if (httpContext.Response.StatusCode > 400 && httpContext.Response.StatusCode < 500)
-                {
-                    throw new Exception("Not Found the page rong url" + httpContext.Request.Body.Position);
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            }
-            }
-            catch (Exception ex)
-            {
-                _ilogger.Log(LogLevel.Information, ex.Message);
+                throw new Exception("Not Found the page rong url" + httpContext.Request.Body.Position);
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
         }
-        }
-    }
-
-    // Extension method used to add the middleware to the HTTP request pipeline.
-    public static class HandleErrorMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseHandleErrorMiddleware(this IApplicationBuilder builder)
+        catch (Exception ex)
         {
-            return builder.UseMiddleware<HandlerErrorMiddleware>();
+            var response = httpContext.Response;
+            response.ContentType = "application/json";
+            _ilogger.Log(LogLevel.Error, ex.Message);
+            switch (ex)
+            {
+                case ArgumentNullException e:
+                    // custom application error
+                    await response.WriteAsync("Oppps... \n the argument {e.Message} is null!");
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                case KeyNotFoundException e:
+                    // not found error
+                    await response.WriteAsync("Oppps... \n Page Not Found!");
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                default:
+                    // unhandled error
+                    await response.WriteAsync("Oppps... \n we are trying to fix the problem!");
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
+            }
         }
     }
+}
+
+// Extension method used to add the middleware to the HTTP request pipeline.
+public static class HandleErrorMiddlewareExtensions
+{
+    public static IApplicationBuilder UseHandleErrorMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<HandlerErrorMiddleware>();
+    }
+}
 
 

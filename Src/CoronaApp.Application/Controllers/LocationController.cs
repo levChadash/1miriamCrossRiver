@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using CoronaApp.Dal.Models;
@@ -10,69 +11,158 @@ using Microsoft.AspNetCore.Mvc;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CoronaApp.Api.Controllers;
-[Authorize]
+[Authorize (Roles="user")]
 [Route("api/[controller]")]
 
 [ApiController]
 
-    // GET: api/<LocationController>
+// GET: api/<LocationController>
 
-    public class LocationController : ControllerBase
+public class LocationController : ControllerBase
+{
+    private readonly ILocationRespository locationRespository;
+
+    public LocationController(ILocationRespository locationRespository)
     {
-        private readonly ILocationRespository bl;
-
-        public LocationController(ILocationRespository bl)
-        {
-            this.bl = bl;
-        }
-        // GET: api/<Location>
-        [HttpGet]
-        public async Task<List<Location>> GetLocations()
-        {
-            return await bl.Get();
-        }
-
-        // GET api/<Location>/5
-        [HttpGet("city/{city}")]
-        public async Task<List<Location>> GetLocationByCity(string city)
-        {
-            return await bl.GetByCity(city);
-        }
-        [HttpGet("id/{id}")]
-        public async Task<List<Location>> getLocationById(string id)
-        {
-            return await bl.GetById(id);
-        }
-
-        [HttpGet("date")]
-        public async Task<List<Location>> GetLocationByDate([FromBody] LocationSearch ls)
-        {
-            return await bl.GetByDate(ls);
-        }
-        [HttpGet("age")]
-        public async Task<List<Location>> GetLocatinByAge([FromBody] LocationSearch ls)
-        {
-            return await bl.GetByAge(ls);
-        }
-
-        // POST api/<Location>
-        [HttpPost]
-
-        public void PostLocation([FromBody] Location location)
-        {
-            bl.Post(location);
-        }
-
-     
-
-        // DELETE api/<Location>/5
-        [HttpDelete]
-        public async Task DeleteLocation([FromBody] Location l)
-        {
-
-            await bl.Delete(l);
-        }
+        this.locationRespository = locationRespository;
     }
+    // GET: api/<Location>
+    [HttpGet]
+    public async Task<ActionResult<List<Location>>> GetLocations()
+    {
+        var result = await locationRespository.GetLocations();
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
+    }
+    // GET api/<Location>/5
+    [HttpGet("city/{city}")]
+    public async Task<ActionResult<List<Location>>> GetLocationByCity(string city)
+    {
+        if (city == null)
+        {
+            throw new ArgumentNullException("no city");
+        }
+
+        var result = await locationRespository.GetByCity(city);
+
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+
+        return Ok(result);
+    }
+    [HttpGet("id/{id}")]
+    public async Task<ActionResult<List<Location>>> GetLocationsByPatientId(string id)
+    {
+        if (id == null)
+        {
+            throw new ArgumentNullException("id");
+        }
+        var result = await locationRespository.GetById(id);
+
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
+
+    }
+
+    [HttpPost("date")]
+    public async Task<ActionResult<List<Location>>> GetLocationSBetweenDates([FromBody] LocationSearch ls)
+    {
+        if (ls.StartDate != null && ls.EndDate != null)
+        {
+            if (DateTime.Compare(ls.StartDate, ls.EndDate) < 0)
+            {
+                return StatusCode(500, "not a valid arguments");
+            }
+        }
+
+        var result = await locationRespository.GetByDate(ls);
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
+    }
+    [HttpPost("age")]
+    public async Task<ActionResult<List<Location>>> GetLocationsByAge([FromBody] LocationSearch ls)
+    {
+        var result = await locationRespository.GetByAge(ls);
+        if (result == null)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (!result.Any())
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
+    }
+
+
+    // POST api/<Location>
+    
+    [HttpPost]
+    public async Task<ActionResult<int>> AddLocation([FromBody] Location location)
+    {
+   
+        if (DateTime.Compare(location.StartDate, location.EndDate) < 0)
+        {
+            throw new Exception("not a valid argument");
+        }
+
+        var result = await locationRespository.AddLocation(location);
+        if (result == 0)
+        {
+            return StatusCode(404, "not found");
+        }
+        if (result == 0)
+        {
+            return StatusCode(204, "no content");
+        }
+        return Ok(result);
+    }
+
+
+
+
+    // DELETE api/<Location>/5
+    [HttpDelete]
+    public async Task DeleteLocation([FromBody] Location location)
+    {
+        await locationRespository.Delete(location);
+    }
+}
+
+
+
+
+
+
+
 
 
 

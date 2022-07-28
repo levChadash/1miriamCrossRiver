@@ -14,13 +14,13 @@ public class LocationRespository : ILocationRespository
     {
         this.dal = Dal;
     }
-    public async Task Post(Location location)
+    public async Task<int> AddLocation(Location location)
     {
-          await dal.Post(location);
+           return await dal.AddLocation(location);
     }
-    public async Task<List<Location>> Get()
+    public async Task<List<Location>> GetLocations()
     {
-        return await dal.Get();
+        return await dal.GetLocations();
     }
     public async Task<List<Location>> GetByCity(string city)
     {
@@ -34,6 +34,14 @@ public class LocationRespository : ILocationRespository
     }
     public async Task<List<Location>> GetByDate(LocationSearch ls)
     {
+        if (ls.StartDate == null)
+        {
+            return await dal.GetByStartDate(ls);
+        }
+        if (ls.EndDate == null)
+        {
+            return await dal.GetByEndDate(ls);
+        }
         return await dal.GetByDate(ls);
     }
     public async Task<List<Location>> GetByAge(LocationSearch ls)
@@ -42,6 +50,6 @@ public class LocationRespository : ILocationRespository
     }
     public async Task Delete(Location l)
     {
-         await dal.Delete(l);
+         await dal.DeleteLocation(l);
     }
 }

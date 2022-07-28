@@ -17,6 +17,7 @@ using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Host.UseSerilog();
 builder.Services.AddDbContext<CoronaAppContext>(item => item.UseSqlServer(builder.Configuration.GetConnectionString("connectionDBMiriam")));
 builder.Services.AddSwaggerGen(c =>

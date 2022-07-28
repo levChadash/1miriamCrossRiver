@@ -5,7 +5,7 @@ namespace CoronaApp.Dal
 {
     public interface IDalUser
     {
-        Task<User> PostLogIn(User user);
-        Task AddUser(User user);
+        Task<User> LogIn(User user);
+        Task SignUp(User user);
     }
 }

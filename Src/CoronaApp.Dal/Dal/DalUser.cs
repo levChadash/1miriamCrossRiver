@@ -15,14 +15,14 @@ public class DalUser : IDalUser
     {
         _context = context;
     }
-    public async Task<User> PostLogIn(User user)
+    public async Task<User> LogIn(User user)
     {
         User u = await _context.Users.FirstOrDefaultAsync(us => us.UserName.Equals(user.UserName) && us.Password.Equals(user.Password));
         if(u == null)
             return null;
         return u;
     }
-    public async Task AddUser(User user)
+    public async Task SignUp(User user)
     {
         try
         {
@@ -31,7 +31,7 @@ public class DalUser : IDalUser
         }
         catch
         {
-            throw new Exception();
+            throw new Exception("didnt add User");
         }
       
     }
