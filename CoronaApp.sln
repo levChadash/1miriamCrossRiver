@@ -9,13 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaApp.Api", "Src\Corona
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaApp.Dal", "Src\CoronaApp.Dal\CoronaApp.Dal.csproj", "{320EAF13-9A7F-46E1-968C-9B84DB6E5FC2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{737FF61C-74A5-4CA5-AAE3-A24C9E01FD1C}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\CrossRiverBootcampServer-master\Tests\CoronaApp.Tests\basic.cs = ..\..\CrossRiverBootcampServer-master\Tests\CoronaApp.Tests\basic.cs
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoronaApp.Tests", "..\..\CrossRiverBootcampServer-master\Tests\CoronaApp.Tests\CoronaApp.Tests.csproj", "{39640978-6D33-4A78-88C0-D890A3F76747}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,16 +27,9 @@ Global
 		{320EAF13-9A7F-46E1-968C-9B84DB6E5FC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{320EAF13-9A7F-46E1-968C-9B84DB6E5FC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{320EAF13-9A7F-46E1-968C-9B84DB6E5FC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39640978-6D33-4A78-88C0-D890A3F76747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39640978-6D33-4A78-88C0-D890A3F76747}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39640978-6D33-4A78-88C0-D890A3F76747}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39640978-6D33-4A78-88C0-D890A3F76747}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{39640978-6D33-4A78-88C0-D890A3F76747} = {737FF61C-74A5-4CA5-AAE3-A24C9E01FD1C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82A6F397-8691-4EC9-B189-48EDF541AFA3}
