@@ -1,5 +1,7 @@
-﻿using CoronaApp.Dal;
+﻿using AutoMapper;
+using CoronaApp.Dal;
 using CoronaApp.Dal.Models;
+using CoronaApp.Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,14 +11,18 @@ namespace CoronaApp.Services;
 
 public class LocationRespository : ILocationRespository
 {
-    IDalLocation dal;
-    public LocationRespository(IDalLocation Dal)
+   private readonly IDalLocation dal;
+    private readonly IMapper mapper;
+    public LocationRespository(IDalLocation Dal,IMapper mapper)
     {
         this.dal = Dal;
+        this.mapper = mapper;
     }
-    public async Task<int> AddLocation(Location location)
+    public async Task<int> AddLocation(LocationPostDTO locationDTO)
     {
-           return await dal.AddLocation(location);
+        Location location =  mapper.Map<Location>(locationDTO);
+        
+        return await dal.AddLocation(location);
     }
     public async Task<List<Location>> GetLocations()
     {
@@ -34,7 +40,7 @@ public class LocationRespository : ILocationRespository
     }
     public async Task<List<Location>> GetByDate(LocationSearch ls)
     {
-        if (ls.StartDate == null)
+        if (ls.StartDate== null)
         {
             return await dal.GetByStartDate(ls);
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoronaApp.Dal.Models;
 using CoronaApp.Services;
+using CoronaApp.Services.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,33 +25,35 @@ public class PatientController : ControllerBase
     }
     // GET: api/<Patient>
     [HttpGet]
-    public async Task<ActionResult<List<Location>>> GetAllPatients()
+    public async Task<ActionResult<List<PatientDTO>>> GetAllPatients()
     {
-        var result = await patientRespository.GetAllPatients();
-        if (result == null)
+        var patients = await patientRespository.GetAllPatients();
+  
+        if (patients == null)
         {
             return StatusCode(404, "not found");
         }
-        if (!result.Any())
+        if (!patients.Any())
         {
             return StatusCode(204, "no content");
         }
-        return Ok(result);
+       
+        return Ok(patients);
     }
     // POST api/<Patient>
     [HttpPost]
     public async Task<ActionResult<string>> AddPatient([FromBody] Patient patient)
     {
         
-        var result = await patientRespository.AddPatient(patient);
-        if (result == null)
+        var patientFound = await patientRespository.AddPatient(patient);
+        if (patientFound == null)
         {
             return StatusCode(404, "not found");
         }
-        if (!result.Any())
+        if (!patientFound.Any())
         {
             return StatusCode(204, "no content");
         }
-        return Ok(result);
+        return Ok(patientFound);
     }
 }

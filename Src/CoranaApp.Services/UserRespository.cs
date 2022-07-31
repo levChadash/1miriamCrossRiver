@@ -34,7 +34,7 @@ public class UserRespository : IUserRespository
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("Name", user.UserName.ToString()),
                         new Claim("id", user.Id.ToString()),
-                        new Claim("Role","user"),
+                        new Claim(ClaimTypes.Role,"user"),
                     };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

@@ -54,7 +54,19 @@ builder.Services.AddSwaggerGen(c =>
               builder.Services.AddScoped<IPatientRespository, PatientRespository>();
               builder.Services.AddScoped<IDalUser, DalUser>();
               builder.Services.AddScoped<IUserRespository, UserRespository>();
-              builder.Services.AddControllers();
+
+              builder.Services.AddAutoMapper(typeof(Program));
+              builder.Services.AddCors(options =>
+              {
+              options.AddPolicy("AllowAll", p =>
+              {
+               p.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+               });
+             });
+
+builder.Services.AddControllers();
               var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("key").Value);
               builder.Services.AddAuthentication(x =>
               {

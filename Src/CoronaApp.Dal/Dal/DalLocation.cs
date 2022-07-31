@@ -77,7 +77,7 @@ public class DalLocation : IDalLocation
     }
     public async Task<List<Location>> GetByAge(LocationSearch ls)
     {
-        List<Location> lc = await _context.Locations.Where(c => c.Patient.Age == ls.Age)
+        List<Location> lc = await _context.Locations.Where(c =>DateTime.Now.Year- (c.Patient.DateOfBirth.Date.Year) == ls.Age)
             .ToListAsync();
         if (lc.Count == 0)
             return null;

@@ -9,9 +9,9 @@ namespace CoronaApp.Dal;
 public class Mock : IDalLocation
 {
 
-    Patient p1 = new Patient() { Id = "324103357", Name = "Miriam", Age = 9 };
-    Patient p2 = new Patient() { Id = "324864800", Name = "Leah", Age = 9 };
-    Patient p3 = new Patient() { Id = "212825376", Name = "Shani", Age = 9 };
+    Patient p1 = new Patient() { Id = "324103357", Name = "Miriam", DateOfBirth=new DateTime() };
+    Patient p2 = new Patient() { Id = "324864800", Name = "Leah", DateOfBirth = new DateTime() };
+    Patient p3 = new Patient() { Id = "212825376", Name = "Shani", DateOfBirth = new DateTime() };
     Location l1;
     List<Patient> pl;
     List<Location> lc;
@@ -29,7 +29,7 @@ public class Mock : IDalLocation
             PatientId = "324103357",
             StartDate = new DateTime(),
             EndDate = new DateTime(),
-            Patient = new Patient() { Id = "324103357", Name = "Miriam", Age = 9 },
+            Patient = new Patient() { Id = "324103357", Name = "Miriam", DateOfBirth = new DateTime() },
         };
         pl.Add(p1);
         pl.Add(p2);
@@ -43,7 +43,7 @@ public class Mock : IDalLocation
 
     public async Task<List<Location>> GetLocations()
     {
-        return lc;
+       return lc;
     }
 
     public Task<List<Location>> GetByAge(LocationSearch ls)

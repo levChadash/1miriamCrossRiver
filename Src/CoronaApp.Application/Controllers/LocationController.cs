@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoronaApp.Dal.Models;
 using CoronaApp.Services;
+using CoronaApp.Services.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -126,15 +127,15 @@ public class LocationController : ControllerBase
     // POST api/<Location>
     
     [HttpPost]
-    public async Task<ActionResult<int>> AddLocation([FromBody] Location location)
+    public async Task<ActionResult<int>> AddLocation([FromBody] LocationPostDTO locationDTO)
     {
    
-        if (DateTime.Compare(location.StartDate, location.EndDate) < 0)
+        if (DateTime.Compare(locationDTO.StartDate, locationDTO.EndDate) < 0)
         {
             throw new Exception("not a valid argument");
         }
 
-        var result = await locationRespository.AddLocation(location);
+        var result = await locationRespository.AddLocation(locationDTO);
         if (result == 0)
         {
             return StatusCode(404, "not found");

@@ -1,7 +1,9 @@
 ﻿using CoronaApp.Dal;
 using CoronaApp.Dal.Models;
+using CoronaApp.Services.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +16,12 @@ public class PatientRespository : IPatientRespository
     {
         this.dal = dal;
     }
-    public async Task<List<Patient>> GetAllPatients()
+    public async Task<List<PatientDTO>> GetAllPatients()
     {
-        return await dal.GetAllPatients();
+        List<Patient> patients= await dal.GetAllPatients();
+        var PatientsDtoList = new List<PatientDTO>();
+        PatientsDtoList = patients.Select(p => new PatientDTO(p.Id, p.Name, DateTime.Now.Year - p.DateOfBirth.Year)).ToList();
+        return PatientsDtoList;
     }
     public async Task<string> AddPatient(Patient patient)
     {

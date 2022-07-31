@@ -12,6 +12,7 @@ namespace CoronaApp.Dal.Models
         public int LocaionId { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }
+
         [DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
         public string City { get; set; }
